@@ -16,15 +16,13 @@ import org.jfree.chart.ChartPanel;
 public class DistribucionesPrograma extends JFrame implements ActionListener {
 
     //Declaraciones
-    JTextField inputMu, inputSigma, inputLambda, inputn, inputp;
     JButton calcularButton, borrarButton, formulasButton, momentosButton;
-    JLabel labelSigma, labelMu, labelLambda, labeln, labelp;
     JComboBox<String> comboBoxProb, comboBoxDist;
 
     String direccion = "mayor"; //Dirección de la probabilidad
 
     String[] optionsProbSim = {"P(X>x)=", "P(X<x)=", "2P(X>|x|)="}; //Opciones direccion
-    String[] optionsProbDisc = {"P(X=x)=", "P(X<=x)=", "P(X>=x)="};
+    String[] optionsProbDisc = {"P(X=x)=", "P(X≤x)=", "P(X≥x)="};
     String[] optionsProbCont = {"P(X>x)=", "P(X<x)="};
 
     String distribucion = "Normal"; //Dist. actual
@@ -40,7 +38,7 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
 
         //Configuración general
         setTitle("Distribuciones de probabilidad");
-        setSize(800, 500);
+        setSize(900, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -49,9 +47,9 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
         /////////////////////////
         setLayout(new BorderLayout(5, 10));
 
-        // Add components to the JFrame using the BorderLayout
+        // Añadiendo componentes al JFrame usando el BorderLayout
         /////NORTE//////
-        // Create a JPanel with a BorderLayout
+        // Creando un JPanel con un BorderLayout
         JPanel northPanel = new JPanel(new BorderLayout());
         add(northPanel, BorderLayout.NORTH);
         northPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -62,13 +60,13 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
         northPanel.add(northLabel, BorderLayout.WEST);
         northLabel.setFont(northLabelFont);
 
-        // JComboBox with options
-        String[] optionsDist = {"Normal", "Exponencial", "Binomial"};
+        // JComboBox con opciones
+        String[] optionsDist = {"Normal", "Chi-cuadrado", "Exponencial", "F", "t de Student", "Binomial", "Poisson"};
         comboBoxDist = new JComboBox<>(optionsDist);
         northPanel.add(comboBoxDist, BorderLayout.EAST);
 
         /////SUR////
-        // Create a JPanel with a BorderLayout
+        // Creando un JPanel con un BorderLayout
         JPanel southPanel = new JPanel(new BorderLayout());
         add(southPanel, BorderLayout.SOUTH);
         southPanel.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -98,72 +96,8 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
 
         westPanel.add(Box.createVerticalGlue()); //Espacio sup
 
-        ///Distribución normal///
-        //mu//
-        JPanel filaPar1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        westPanel.add(filaPar1);
-
-        //mu - Label
-        labelMu = new JLabel("μ = ");
-        Font fontMu = new Font(labelMu.getFont().getName(), Font.BOLD, labelMu.getFont().getSize());
-        labelMu.setFont(fontMu);
-        filaPar1.add(labelMu);
-
-        //mu - Campo texto
-        inputMu = new JTextField(3);
-        filaPar1.add(inputMu);
-
-        //sigma//
-        JPanel filaPar2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        westPanel.add(filaPar2);
-
-        //Sigma - Label
-        labelSigma = new JLabel("σ = ");
-        Font fontSigma = new Font(labelSigma.getFont().getName(), Font.BOLD, labelSigma.getFont().getSize());
-        labelSigma.setFont(fontSigma);
-        filaPar2.add(labelSigma);
-
-        //Sigma - Campo texto
-        inputSigma = new JTextField(3);
-        filaPar2.add(inputSigma);
-
-        ///Distribución exponencial///
-        //Lambda - Label
-        labelLambda = new JLabel("λ = ");
-        Font fontLambda = new Font(labelLambda.getFont().getName(), Font.BOLD, labelLambda.getFont().getSize());
-        labelLambda.setFont(fontLambda);
-        filaPar2.add(labelLambda);
-        labelLambda.setVisible(false);
-
-        //Lambda- Campo texto
-        inputLambda = new JTextField(3);
-        filaPar2.add(inputLambda);
-        inputLambda.setVisible(false);
-
-        ///Distribución binomial///
-        //n - Label
-        labeln = new JLabel("n = ");
-        Font fontn = new Font(labeln.getFont().getName(), Font.BOLD, labeln.getFont().getSize());
-        labeln.setFont(fontn);
-        filaPar2.add(labeln);
-        labeln.setVisible(false);
-
-        //n - Campo texto
-        inputn = new JTextField(3);
-        filaPar2.add(inputn);
-        inputn.setVisible(false);
-
-        //p - Label
-        labelp = new JLabel("p = ");
-        Font fontp = new Font(labelp.getFont().getName(), Font.BOLD, labelp.getFont().getSize());
-        labelp.setFont(fontp);
-        filaPar2.add(labelp);
-        labelp.setVisible(false);
-
-        //p- Campo texto
-        inputp = new JTextField(3);
-        filaPar2.add(inputp);
-        inputp.setVisible(false);
+        //Parámetros//
+        Parametros.CrearParam(westPanel);
 
         //X y probabilidades
         westPanel.add(Box.createVerticalGlue()); //Espacio vertical arriba x
@@ -177,7 +111,7 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
         labelX.setFont(fontX);
         filaX.add(labelX);
 
-        Graficos.inputX = new JTextField(5);
+        Graficos.inputX = new JTextField(6);
         filaX.add(Graficos.inputX);
 
         westPanel.add(Box.createVerticalGlue()); //Espacio vertical abajo x
@@ -272,163 +206,50 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
             Graficos.labelProb2.setText("");
             Graficos.labelProb1.setVisible(false);
             Graficos.labelProb2.setVisible(false);
+
             switch (distribucion) {
                 case "Normal": {
-                    // Distribución normal
-                    String muString = inputMu.getText();
-                    String sigmaString = inputSigma.getText();
-                    String xString = Graficos.inputX.getText();
-                    String probString = Graficos.inputProb.getText();
-
-                    if (muString.isEmpty() || sigmaString.isEmpty()) { //Evaluar casilleros vacios
-                        Graficos.labelError.setText("ERROR:");
-                        Graficos.textoError.setText("Complete todos los parámetros");
-
-                    } else {
-                        try { //Convertir a numérico
-                            Graficos.labelError.setText("");
-                            Graficos.textoError.setText("");
-                            double valorMu = Double.parseDouble(muString);
-                            double valorSigma = Double.parseDouble(sigmaString);
-
-                            if (valorSigma <= 0) {
-                                Graficos.labelError.setText("ERROR:");
-                                Graficos.textoError.setText("σ debe ser mayor a 0");
-                            } else {
-                                if (!xString.isEmpty()) {
-                                    double valorX = Double.parseDouble(xString);
-                                    Graficos.PlotNormalX(valorMu, valorSigma, valorX, direccion);
-                                } else if (!probString.isEmpty()) {
-                                    double valorProb = Double.parseDouble(probString);
-                                    if (valorProb <= 0 || valorProb >= 1) {
-                                        Graficos.labelError.setText("ERROR:");
-                                        Graficos.textoError.setText("La probabilidad debe estar entre 0 y 1");
-                                    } else {
-                                        Graficos.PlotNormalP(valorMu, valorSigma, valorProb, direccion);
-                                    }
-                                } else {
-                                    Graficos.PlotNormal(valorMu, valorSigma);
-                                }
-                            }
-
-                        } catch (Exception valInc) {//Evaluar casilleros no numéricos
-                            Graficos.labelError.setText("ERROR:");
-                            Graficos.textoError.setText("Los valores deben ser numéricos");
-                        }
-                    }
+                    Controles.ControlNormal(direccion);
+                    break;
+                }
+                case "Chi-cuadrado": {
+                    Controles.ControlChi(direccion);
                     break;
                 }
                 case "Exponencial": {
-                    // Distribución exponencial
-                    String lambdaString = inputLambda.getText();
-                    String xString = Graficos.inputX.getText();
-                    String probString = Graficos.inputProb.getText();
-
-                    if (lambdaString.isEmpty()) { //Evaluar casilleros vacios
-                        Graficos.labelError.setText("ERROR:");
-                        Graficos.textoError.setText("Complete todos los parámetros");
-                    } else {
-                        try { //Convertir a numérico
-                            Graficos.labelError.setText("");
-                            Graficos.textoError.setText("");
-                            double valorLambda = Double.parseDouble(lambdaString);
-
-                            if (valorLambda <= 0) {
-                                Graficos.labelError.setText("ERROR:");
-                                Graficos.textoError.setText("λ debe ser mayor a 0");
-                            } else {
-                                if (!xString.isEmpty()) {
-                                    double valorX = Double.parseDouble(xString);
-                                    Graficos.PlotExpoX(valorLambda, valorX, direccion);
-                                } else if (!probString.isEmpty()) {
-                                    double valorProb = Double.parseDouble(probString);
-                                    if (valorProb <= 0 || valorProb >= 1) {
-                                        Graficos.labelError.setText("ERROR:");
-                                        Graficos.textoError.setText("La probabilidad debe estar entre 0 y 1");
-                                    } else {
-                                        Graficos.PlotExpoP(valorLambda, valorProb, direccion);
-                                    }
-                                } else {
-                                    Graficos.PlotExpo(valorLambda);
-                                }
-                            }
-
-                        } catch (Exception valInc) {//Evaluar casilleros no numéricos
-                            Graficos.labelError.setText("ERROR:");
-                            Graficos.textoError.setText("Los valores deben ser numéricos");
-                        }
-                    }
+                    Controles.ControlExpo(direccion);
+                    break;
+                }
+                case "F": {
+                    Controles.ControlF(direccion);
+                    break;
+                }
+                case "t de Student": {
+                    Controles.ControlStu(direccion);
                     break;
                 }
                 case "Binomial": {
-                    // Distribución binomial
-                    String nString = inputn.getText();
-                    String pString = inputp.getText();
-                    String xString = Graficos.inputX.getText();
-                    String probString = Graficos.inputProb.getText();
-
-                    if (nString.isEmpty() || pString.isEmpty()) { //Evaluar casilleros vacios
-                        Graficos.labelError.setText("ERROR:");
-                        Graficos.textoError.setText("Complete todos los parámetros");
-                    } else {
-                        try { //Convertir a numérico
-                            Graficos.labelError.setText("");
-                            Graficos.textoError.setText("");
-                            double valornDouble = Double.parseDouble(nString);
-                            int valorn = (int) valornDouble;
-                            double valorp = Double.parseDouble(pString);
-
-                            if (valorn <= 0) {
-                                Graficos.labelError.setText("ERROR:");
-                                Graficos.textoError.setText("n debe ser mayor a 0");
-                            } else if (valorp <= 0 || valorp >= 1) {
-                                Graficos.labelError.setText("ERROR:");
-                                Graficos.textoError.setText("p debe estar entre 0 y 1");
-                            } else {
-                                if (!xString.isEmpty()) {
-                                    try {
-                                        int valorX = Integer.parseInt(xString);
-                                        if (valorX < 0 || valorX > valorn) {
-                                            Graficos.labelError.setText("ERROR:");
-                                            Graficos.textoError.setText("x debe estar entre 0 y n");
-                                        } else {
-                                            Graficos.PlotBinomX(valorn, valorp, valorX, direccion);
-                                        }
-                                    } catch (Exception xInc) {
-                                        Graficos.labelError.setText("ERROR:");
-                                        Graficos.textoError.setText("x debe ser un entero");
-                                    }
-
-                                } else if (!probString.isEmpty()) {
-                                    double valorProb = Double.parseDouble(probString);
-                                    if (valorProb <= 0 || valorProb >= 1) {
-                                        Graficos.labelError.setText("ERROR:");
-                                        Graficos.textoError.setText("La probabilidad debe estar entre 0 y 1");
-                                    } else {
-                                        Graficos.PlotBinomP(valorn, valorp, valorProb, direccion);
-                                    }
-                                } else {
-                                    Graficos.PlotBinom(valorn, valorp);
-                                }
-                            }
-
-                        } catch (Exception valInc) {//Evaluar casilleros no numéricos
-                            Graficos.labelError.setText("ERROR:");
-                            Graficos.textoError.setText("Los valores deben ser numéricos");
-                        }
-                    }
+                    Controles.ControlBinom(direccion);
                     break;
                 }
+                case "Poisson": {
+                    Controles.ControlPois(direccion);
+                    break;
+                }
+
             }
 
         } else if (e.getSource() == borrarButton) { //Botón borrar
             Graficos.labelError.setText("");
             Graficos.textoError.setText("");
-            inputMu.setText("");
-            inputSigma.setText("");
-            inputLambda.setText("");
-            inputn.setText("");
-            inputp.setText("");
+            Parametros.inputMu.setText("");
+            Parametros.inputSigma.setText("");
+            Parametros.inputLambda.setText("");
+            Parametros.inputn.setText("");
+            Parametros.inputp.setText("");
+            Parametros.inputV.setText("");
+            Parametros.inputDF1.setText("");
+            Parametros.inputDF2.setText("");
             Graficos.inputX.setText("");
             Graficos.inputProb.setText("");
             Graficos.labelProb1.setText("");
@@ -440,31 +261,13 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
             try {
                 String selectedOption = (String) comboBoxProb.getSelectedItem();
                 Graficos.inputProb.setText("");
-                //PARA JAVA >14
-//                direccion = switch (selectedOption) {
-//                    case "P(X>x)=" ->
-//                        "mayor";
-//                    case "P(X>=x)=" ->
-//                        "mayor";
-//                    case "P(X<x)=" ->
-//                        "menor";
-//                    case "P(X<=x)=" ->
-//                        "menor";
-//                    case "2P(X>|x|)=" ->
-//                        "doble";
-//                    case "P(X=x)=" ->
-//                        "igual";
-//                    default ->
-//                        "mayor";
-//                };
 
-//PARA JAVA <14
                 switch (selectedOption) {
                     case "P(X>x)=": {
                         direccion = "mayor";
                         break;
                     }
-                    case "P(X>=x)=": {
+                    case "P(X≥x)=": {
                         direccion = "mayor";
                         break;
                     }
@@ -472,7 +275,7 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
                         direccion = "menor";
                         break;
                     }
-                    case "P(X<=x)=": {
+                    case "P(X≤x)=": {
                         direccion = "menor";
                         break;
                     }
@@ -488,14 +291,21 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
                         direccion = "mayor";
                         break;
                     }
-                };
+                }
 
             } catch (Exception c) {
                 //Evita error
             }
 
         } else if (e.getSource() == comboBoxDist) { //Opciones dirección
+
+            //Determinar distribución actual
             String selectedOption = (String) comboBoxDist.getSelectedItem();
+            distribucion = selectedOption;
+
+            //Resetear opciones
+            Graficos.labelError.setText("");
+            Graficos.textoError.setText("");
             Graficos.inputProb.setText("");
             Graficos.inputX.setText("");
             Graficos.graficoDist.setVisible(false);
@@ -506,65 +316,9 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
             Graficos.esperanzaActual = null;
             Graficos.varianciaActual = null;
 
-            distribucion = selectedOption;
-
             //Actualizar GUI
-            if ("Normal".equals(distribucion)) {
+            Parametros.ActualizarParam(distribucion, comboBoxProb, optionsProbSim, optionsProbDisc, optionsProbCont);
 
-                comboBoxProb.removeAllItems();
-                for (String item : optionsProbSim) {
-                    comboBoxProb.addItem(item);
-                }
-
-                labelSigma.setVisible(true);
-                labelMu.setVisible(true);
-                inputMu.setVisible(true);
-                inputSigma.setVisible(true);
-
-            } else {
-                labelSigma.setVisible(false);
-                labelMu.setVisible(false);
-                inputMu.setVisible(false);
-                inputSigma.setVisible(false);
-                inputMu.setText("");
-                inputSigma.setText("");
-            }
-            if ("Exponencial".equals(distribucion)) {
-
-                comboBoxProb.removeAllItems();
-                for (String item : optionsProbCont) {
-                    comboBoxProb.addItem(item);
-                }
-
-                labelLambda.setVisible(true);
-                inputLambda.setVisible(true);
-
-            } else {
-                labelLambda.setVisible(false);
-                inputLambda.setVisible(false);
-                inputLambda.setText("");
-            }
-
-            if ("Binomial".equals(distribucion)) {
-
-                comboBoxProb.removeAllItems();
-                for (String item : optionsProbDisc) {
-                    comboBoxProb.addItem(item);
-                }
-
-                labeln.setVisible(true);
-                inputn.setVisible(true);
-                labelp.setVisible(true);
-                inputp.setVisible(true);
-
-            } else {
-                labeln.setVisible(false);
-                inputn.setVisible(false);
-                inputn.setText("");
-                labelp.setVisible(false);
-                inputp.setVisible(false);
-                inputp.setText("");
-            }
         } else if (e.getSource() == formulasButton) { //Botón formulas
 
             Formulas.generarFormula(distribucion);
@@ -574,8 +328,9 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
                 File ruta = new File("imgformula.png"); //Crea archivo
                 image = ImageIO.read(ruta); //Convierte a imagen
                 ruta.delete(); //Eliminar el archivo
-                JLabel imagenFormula = new JLabel(new ImageIcon(image));
 
+                JLabel imagenFormula = new JLabel(new ImageIcon(image));
+                UIManager.put("OptionPane.minimumSize", new Dimension(image.getWidth(), image.getHeight())); //Cambiar tamaño caja
                 JOptionPane.showMessageDialog(null, imagenFormula,
                         "Fórmulas", JOptionPane.PLAIN_MESSAGE);
 
@@ -585,8 +340,8 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
             }
 
         } else if (e.getSource() == momentosButton) { //Botón formulas
-
-//                JLabel textoMomentos  = new JLabel("E(X)=\n" + 2 + "\n V(X)=" + 3);
+            UIManager.put("OptionPane.minimumSize", new Dimension(30, 30)); //Cambiar tamaño caja
+            
             JLabel[] textoMomentos = {new JLabel("E(X) = " + Graficos.esperanzaActual), new JLabel("V(X) = " + Graficos.varianciaActual)};
 
             JOptionPane.showMessageDialog(null, textoMomentos,
