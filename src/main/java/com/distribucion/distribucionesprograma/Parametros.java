@@ -16,8 +16,10 @@ import java.awt.Font;
  */
 public class Parametros {
 
-    public static JTextField inputMu, inputSigma, inputLambda, inputn, inputp, inputV, inputDF1, inputDF2, inputK;
-    public static JLabel labelSigma, labelMu, labelLambda, labeln, labelp, labelV, labelDF1, labelDF2, labelK;
+    public static JTextField inputMu, inputSigma, inputLambda, inputn, inputp, inputV, inputDF1,
+            inputDF2, inputK, inputA, inputB, inputN, inputN1, inputAlfa, inputBeta, inputr;
+    public static JLabel labelSigma, labelMu, labelLambda, labeln, labelp, labelV, labelDF1,
+            labelDF2, labelK, labelA, labelB, labelN, labelN1, labelAlfa, labelBeta, labelr;
     public static String tipoDist;
 
     static void CrearParam(JPanel Panel) {
@@ -26,6 +28,9 @@ public class Parametros {
 
         JPanel filaPar2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         Panel.add(filaPar2);
+
+        JPanel filaPar3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        Panel.add(filaPar3);
 
         ///Distribución normal///
         //mu//
@@ -90,7 +95,7 @@ public class Parametros {
 
         ///Distribución t-student///
         //v - Label
-        labelV = new JLabel("v = ");
+        labelV = new JLabel("ν = ");
         Font fontV = new Font(labelV.getFont().getName(), Font.BOLD, labelV.getFont().getSize());
         labelV.setFont(fontV);
         filaPar1.add(labelV);
@@ -138,6 +143,94 @@ public class Parametros {
         inputK = new JTextField(3);
         filaPar1.add(inputK);
         inputK.setVisible(false);
+
+        ///Distribución uniforme///
+        //a - label
+        labelA = new JLabel("a = ");
+        Font fontA = new Font(labelA.getFont().getName(), Font.BOLD, labelA.getFont().getSize());
+        labelA.setFont(fontA);
+        filaPar1.add(labelA);
+        labelA.setVisible(false);
+
+        //a - Campo texto
+        inputA = new JTextField(3);
+        filaPar1.add(inputA);
+        inputA.setVisible(false);
+
+        //b - label
+        labelB = new JLabel("b = ");
+        Font fontB = new Font(labelB.getFont().getName(), Font.BOLD, labelB.getFont().getSize());
+        labelB.setFont(fontB);
+        filaPar2.add(labelB);
+        labelB.setVisible(false);
+
+        //b - Campo texto
+        inputB = new JTextField(3);
+        filaPar2.add(inputB);
+        inputB.setVisible(false);
+
+        ///Distribución binomial negativa///
+        //r - Label
+        labelr = new JLabel("r = ");
+        Font fontr = new Font(labelr.getFont().getName(), Font.BOLD, labelr.getFont().getSize());
+        labelr.setFont(fontr);
+        filaPar1.add(labelr);
+        labelr.setVisible(false);
+
+        //r - Campo texto
+        inputr = new JTextField(3);
+        filaPar1.add(inputr);
+        inputr.setVisible(false);
+
+        ///Distribución hipergeométrica///
+        //N - label
+        labelN = new JLabel("N = ");
+        Font fontN = new Font(labelN.getFont().getName(), Font.BOLD, labelN.getFont().getSize());
+        labelN.setFont(fontN);
+        filaPar2.add(labelN);
+        labelN.setVisible(false);
+
+        //N - Campo texto
+        inputN = new JTextField(3);
+        filaPar2.add(inputN);
+        inputN.setVisible(false);
+
+        //N1 - label
+        labelN1 = new JLabel("N1 = ");
+        Font fontN1 = new Font(labelN1.getFont().getName(), Font.BOLD, labelN1.getFont().getSize());
+        labelN1.setFont(fontN1);
+        filaPar3.add(labelN1);
+        labelN1.setVisible(false);
+
+        //N1 - Campo texto
+        inputN1 = new JTextField(3);
+        filaPar3.add(inputN1);
+        inputN1.setVisible(false);
+
+        ////Distribución Beta o Gama
+        //Alfa - label
+        labelAlfa = new JLabel("α = ");
+        Font fontAlfa = new Font(labelAlfa.getFont().getName(), Font.BOLD, labelAlfa.getFont().getSize());
+        labelAlfa.setFont(fontAlfa);
+        filaPar1.add(labelAlfa);
+        labelAlfa.setVisible(false);
+
+        //Alfa - Campo texto
+        inputAlfa = new JTextField(3);
+        filaPar1.add(inputAlfa);
+        inputAlfa.setVisible(false);
+
+        //Beta - label
+        labelBeta = new JLabel("β = ");
+        Font fontBeta = new Font(labelBeta.getFont().getName(), Font.BOLD, labelBeta.getFont().getSize());
+        labelBeta.setFont(fontBeta);
+        filaPar2.add(labelBeta);
+        labelBeta.setVisible(false);
+
+        //Beta - Campo texto
+        inputBeta = new JTextField(3);
+        filaPar2.add(inputBeta);
+        inputBeta.setVisible(false);
     }
 
     static void ActualizarParam(String distribucion,
@@ -177,6 +270,28 @@ public class Parametros {
         labelK.setVisible(false);
         inputK.setVisible(false);
         inputK.setText("");
+        //Uniforme
+        labelA.setVisible(false);
+        inputA.setVisible(false);
+        inputA.setText("");
+        labelB.setVisible(false);
+        inputB.setVisible(false);
+        inputB.setText("");
+        //Hipergeométrica
+        labelN.setVisible(false);
+        inputN.setVisible(false);
+        inputN.setText("");
+        labelN1.setVisible(false);
+        inputN1.setVisible(false);
+        inputN1.setText("");
+        //Beta o Gama
+        labelAlfa.setVisible(false);
+        inputAlfa.setVisible(false);
+        labelBeta.setVisible(false);
+        inputBeta.setVisible(false);
+        //Binomial negativa
+        labelr.setVisible(false);
+        inputr.setVisible(false);
 
         switch (distribucion) {
             case "Normal": {
@@ -185,6 +300,14 @@ public class Parametros {
                 inputMu.setVisible(true);
                 inputSigma.setVisible(true);
                 tipoDist = "Simetrica";
+                break;
+            }
+            case "Beta": {
+                labelAlfa.setVisible(true);
+                inputAlfa.setVisible(true);
+                labelBeta.setVisible(true);
+                inputBeta.setVisible(true);
+                tipoDist = "Continua";
                 break;
             }
             case "Chi-cuadrado": {
@@ -207,10 +330,32 @@ public class Parametros {
                 tipoDist = "Continua";
                 break;
             }
+            case "Gama": {
+                labelAlfa.setVisible(true);
+                inputAlfa.setVisible(true);
+                labelBeta.setVisible(true);
+                inputBeta.setVisible(true);
+                tipoDist = "Continua";
+                break;
+            }
             case "t de Student": {
                 labelV.setVisible(true);
                 inputV.setVisible(true);
                 tipoDist = "Simetrica";
+                break;
+            }
+            case "Uniforme continua": {
+                labelA.setVisible(true);
+                inputA.setVisible(true);
+                labelB.setVisible(true);
+                inputB.setVisible(true);
+                tipoDist = "Continua";
+                break;
+            }
+            case "Bernoulli": {
+                labelp.setVisible(true);
+                inputp.setVisible(true);
+                tipoDist = "Discreta";
                 break;
             }
             case "Binomial": {
@@ -218,6 +363,38 @@ public class Parametros {
                 inputn.setVisible(true);
                 labelp.setVisible(true);
                 inputp.setVisible(true);
+                tipoDist = "Discreta";
+                break;
+            }
+            case "Binomial negativa": {
+                labelr.setVisible(true);
+                inputr.setVisible(true);
+                labelp.setVisible(true);
+                inputp.setVisible(true);
+                tipoDist = "Discreta";
+                break;
+            }
+            case "Geométrica": {
+                labelp.setVisible(true);
+                inputp.setVisible(true);
+                tipoDist = "Discreta";
+                break;
+            }
+            case "Hipergeométrica": {
+                labeln.setVisible(true);
+                inputn.setVisible(true);
+                labelN.setVisible(true);
+                inputN.setVisible(true);
+                labelN1.setVisible(true);
+                inputN1.setVisible(true);
+                tipoDist = "Discreta";
+                break;
+            }
+            case "Uniforme discreta": {
+                labelA.setVisible(true);
+                inputA.setVisible(true);
+                labelB.setVisible(true);
+                inputB.setVisible(true);
                 tipoDist = "Discreta";
                 break;
             }

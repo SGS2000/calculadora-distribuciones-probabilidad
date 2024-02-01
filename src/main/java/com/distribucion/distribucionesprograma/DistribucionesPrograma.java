@@ -61,7 +61,9 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
         northLabel.setFont(northLabelFont);
 
         // JComboBox con opciones
-        String[] optionsDist = {"Normal", "Chi-cuadrado", "Exponencial", "F", "t de Student", "Binomial", "Poisson"};
+        String[] optionsDist = {"Normal", "Beta", "Chi-cuadrado", "Exponencial", "F", "Gama", "t de Student",
+            "Uniforme continua", "Bernoulli", "Binomial", "Binomial negativa", "Geométrica", "Hipergeométrica",
+            "Uniforme discreta", "Poisson"};
         comboBoxDist = new JComboBox<>(optionsDist);
         northPanel.add(comboBoxDist, BorderLayout.EAST);
 
@@ -212,6 +214,10 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
                     Controles.ControlNormal(direccion);
                     break;
                 }
+                case "Beta": {
+                    Controles.ControlBeta(direccion);
+                    break;
+                }
                 case "Chi-cuadrado": {
                     Controles.ControlChi(direccion);
                     break;
@@ -224,19 +230,46 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
                     Controles.ControlF(direccion);
                     break;
                 }
+                case "Gama": {
+                    Controles.ControlGama(direccion);
+                    break;
+                }
                 case "t de Student": {
                     Controles.ControlStu(direccion);
+                    break;
+                }
+                case "Uniforme continua": {
+                    Controles.ControlUnifC(direccion);
+                    break;
+                }
+                case "Bernoulli": {
+                    Controles.ControlBernoulli(direccion);
                     break;
                 }
                 case "Binomial": {
                     Controles.ControlBinom(direccion);
                     break;
                 }
+                case "Binomial negativa": {
+                    Controles.ControlBinNeg(direccion);
+                    break;
+                }
+                case "Geométrica": {
+                    Controles.ControlGeom(direccion);
+                    break;
+                }
+                case "Hipergeométrica": {
+                    Controles.ControlHiper(direccion);
+                    break;
+                }
+                case "Uniforme discreta": {
+                    Controles.ControlUnifD(direccion);
+                    break;
+                }
                 case "Poisson": {
                     Controles.ControlPois(direccion);
                     break;
                 }
-
             }
 
         } else if (e.getSource() == borrarButton) { //Botón borrar
@@ -250,6 +283,12 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
             Parametros.inputV.setText("");
             Parametros.inputDF1.setText("");
             Parametros.inputDF2.setText("");
+            Parametros.inputA.setText("");
+            Parametros.inputB.setText("");
+            Parametros.inputN.setText("");
+            Parametros.inputN1.setText("");
+            Parametros.inputAlfa.setText("");
+            Parametros.inputBeta.setText("");
             Graficos.inputX.setText("");
             Graficos.inputProb.setText("");
             Graficos.labelProb1.setText("");
@@ -313,6 +352,8 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
             Graficos.labelProb2.setText("");
             Graficos.labelProb1.setVisible(false);
             Graficos.labelProb2.setVisible(false);
+            Graficos.labelProb1.setVisible(false);
+            Graficos.labelProb2.setVisible(false);
             Graficos.esperanzaActual = null;
             Graficos.varianciaActual = null;
 
@@ -341,7 +382,7 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
 
         } else if (e.getSource() == momentosButton) { //Botón formulas
             UIManager.put("OptionPane.minimumSize", new Dimension(30, 30)); //Cambiar tamaño caja
-            
+
             JLabel[] textoMomentos = {new JLabel("E(X) = " + Graficos.esperanzaActual), new JLabel("V(X) = " + Graficos.varianciaActual)};
 
             JOptionPane.showMessageDialog(null, textoMomentos,
