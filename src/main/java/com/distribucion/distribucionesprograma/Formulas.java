@@ -157,7 +157,45 @@ public class Formulas {
                 formula += "\\hline";
                 break;
             }
-
+            case "Log-normal": {
+                formula = "\\begin{array}{lr}\\mathbf{\\mbox{Función de densidad:}}&$$f(x) = \\frac{1}{x \\sigma \\sqrt{2\\pi}} \\exp\\left(-\\frac{(\\ln(x) - \\mu)^2}{2\\sigma^2}\\right)$$ \\\\";
+                formula += "\\end{array} \\\\";
+                formula += "\\begin{array}{cc}";
+                formula += "\\ Donde: &$$x>0$$ \\\\";
+                formula += "\\ &$$σ>0$$ \\\\";
+                formula += "\\end{array}";
+                formula += " \\\\";
+                formula += "\\hline";
+                formula += "\\begin{array}{lr}";
+                formula += "\\mathbf{\\mbox{Esperanza:}} & $$ E(X)= e^{\\mu + \\frac{\\sigma^2}{2}}$$ \\\\";
+                formula += "\\end{array}";
+                formula += " \\\\";
+                formula += "\\hline";
+                formula += "\\begin{array}{lr}";
+                formula += "\\mathbf{\\mbox{Varianza:}} & $$ Var(X) = (e^{\\sigma^2} - 1)e^{2\\mu + \\sigma^2}$$";
+                formula += "\\end{array}";
+                break;
+            }
+            case "Pareto I": {
+                formula = "\\begin{array}{lr}\\mathbf{\\mbox{Función de densidad:}}&$$f(x) = \\frac{\\alpha m^\\alpha}{x^{\\alpha + 1}}$$ \\\\";
+                formula += "\\end{array} \\\\";
+                formula += "\\begin{array}{cc}";
+                formula += "\\ Donde: &$$\\alpha >0$$ \\\\";
+                formula += "\\ &$$m>0$$ \\\\";
+                formula += "\\ &$$x \\geq m$$ \\\\";
+                formula += "\\end{array}";
+                formula += " \\\\";
+                formula += "\\hline";
+                formula += "\\begin{array}{lr}";
+                formula += "\\mathbf{\\mbox{Esperanza:}} & $$ E(X)= \\begin{cases} \\infty & \\text{para } \\alpha \\leq 1 \\\\ \\frac{\\alpha m}{\\alpha - 1} & \\text{para } \\alpha > 1 \\end{cases} $$ \\\\";
+                formula += "\\end{array}";
+                formula += " \\\\";
+                formula += "\\hline";
+                formula += "\\begin{array}{lr}";
+                formula += "\\mathbf{\\mbox{Varianza:}} & $$ Var(X) = \\begin{cases} \\infty & \\text{para } \\alpha \\leq 2 \\\\ \\left( \\frac{m}{\\alpha - 1} \\right)^2 \\frac{\\alpha}{\\alpha - 2} & \\text{para } \\alpha > 2 \\end{cases} $$";
+                formula += "\\end{array}";
+                break;
+            }
             case "t de Student": {
                 formula = "\\begin{array}{lr}\\mathbf{\\mbox{Función de densidad:}}&$$f(x) = \\frac{\\Gamma\\left(\\frac{\\nu+1}{2}\\right)}{\\sqrt{\\nu\\pi}\\,\\Gamma\\left(\\frac{\\nu}{2}\\right)}  \\left(1+\\frac{x^2}{\\nu}\\right) ^ {-\\frac{(\\nu+1)}{2}}$$ \\\\";
                 formula += "\\end{array} \\\\";
@@ -201,6 +239,32 @@ public class Formulas {
                 formula += "\\hline";
                 formula += "\\begin{array}{c}";
                 formula += "\\mathbf{\\mbox{Varianza:}}&$$ Var(X)= \\frac{(b-a)^{2}}{12}$$ \\\\";
+                formula += "\\end{array}";
+                break;
+            }
+            case "Weibull": {
+                formula = "\\begin{array}{lr}\\mathbf{\\mbox{Función de densidad:}}&$$f(x) = \\frac{\\beta}{\\eta} \\left(\\frac{x}{\\eta}\\right)^{\\beta-1} e^{-(x/\\eta)^\\beta} $$ \\\\";
+                formula += "\\end{array} \\\\";
+                formula += "\\begin{array}{cc}";
+                formula += " Donde: &$$x \\geq 0 \\ $$ \\\\";
+                formula += "&$$\\eta>0$$ \\\\";
+                formula += "&$$\\beta>0$$ \\\\";
+                formula += "\\end{array}";
+                formula += " \\\\";
+                formula += "\\begin{array}{lr}";
+                formula += "\\mathbf{\\mbox{Función generadora de momentos:}}&$$M_X(t) = \\sum_{n=0}^{\\infty}\\frac{t^{n}\\eta^{n}}{n!}\\Gamma(1+n/\\beta)$$ \\\\";
+                formula += "\\end{array} \\\\";
+                formula += "\\begin{array}{cc}";
+                formula += " Donde: &$$\\beta\\ge1 \\ $$ \\\\";
+                formula += "\\end{array} \\\\";
+                formula += "\\hline";
+                formula += "\\begin{array}{c}";
+                formula += "\\mathbf{\\mbox{Esperanza:}}&$$ E(X)= \\eta \\, \\Gamma\\left(1 + \\frac{1}{\\beta}\\right)$$ \\\\";
+                formula += "\\end{array}";
+                formula += " \\\\";
+                formula += "\\hline";
+                formula += "\\begin{array}{c}";
+                formula += "\\mathbf{\\mbox{Varianza:}}&$$ Var(X)= \\eta^2 \\left[ \\Gamma\\left(1 + \\frac{2}{\\beta}\\right) - \\left(\\Gamma\\left(1 + \\frac{1}{\\beta}\\right)\\right)^2 \\right]$$ \\\\";
                 formula += "\\end{array}";
                 break;
             }

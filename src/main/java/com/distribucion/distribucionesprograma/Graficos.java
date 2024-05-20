@@ -8,6 +8,10 @@ import javax.swing.JTextField;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+//Cálculos
+import org.apache.commons.math3.special.Gamma;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+
 //Distribuciones
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.ChiSquaredDistribution;
@@ -22,6 +26,9 @@ import org.apache.commons.math3.distribution.HypergeometricDistribution;
 import org.apache.commons.math3.distribution.BetaDistribution;
 import org.apache.commons.math3.distribution.GammaDistribution;
 import org.apache.commons.math3.distribution.PascalDistribution;
+import org.apache.commons.math3.distribution.WeibullDistribution;
+import org.apache.commons.math3.distribution.LogNormalDistribution;
+import org.apache.commons.math3.distribution.ParetoDistribution;
 
 //Elementos gráficos
 import java.awt.BasicStroke;
@@ -62,12 +69,7 @@ public class Graficos {
         NormalDistribution distribution = new NormalDistribution(mu, sigma);
 
         // Crear dataset
-        Function2D normal = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D normal = (double x) -> distribution.density(x);
 
         String leyenda = "N(" + mu + "," + sigma + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(normal, mu - 4 * sigma, mu + 4 * sigma, 1000, leyenda);
@@ -85,7 +87,7 @@ public class Graficos {
 
         // Actualizar momentos
         esperanzaActual = new BigDecimal(mu).setScale(5, RoundingMode.HALF_UP);
-        varianciaActual = new BigDecimal(sigma).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal(sigma * sigma).setScale(5, RoundingMode.HALF_UP);
     }
 
     static void PlotNormalX(double mu, double sigma, double x, String direccion) {
@@ -93,12 +95,7 @@ public class Graficos {
         NormalDistribution distribution = new NormalDistribution(mu, sigma);
 
         // Crear dataset
-        Function2D normal = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D normal = (double x1) -> distribution.density(x1);
 
         String leyenda = "Normal (" + mu + "," + sigma + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(normal, mu - 4 * sigma, mu + 4 * sigma, 1000, leyenda);
@@ -230,7 +227,7 @@ public class Graficos {
 
         // Actualizar momentos
         esperanzaActual = new BigDecimal(mu).setScale(5, RoundingMode.HALF_UP);
-        varianciaActual = new BigDecimal(sigma).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal(sigma * sigma).setScale(5, RoundingMode.HALF_UP);
     }
 
     static void PlotNormalP(double mu, double sigma, double prob, String direccion) {
@@ -239,12 +236,7 @@ public class Graficos {
         NormalDistribution distribution = new NormalDistribution(mu, sigma);
 
         // Crear dataset
-        Function2D normal = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D normal = (double x) -> distribution.density(x);
 
         String leyenda = "Normal (" + mu + "," + sigma + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(normal, mu - 4 * sigma, mu + 4 * sigma, 1000, leyenda);
@@ -334,7 +326,7 @@ public class Graficos {
 
         // Actualizar momentos
         esperanzaActual = new BigDecimal(mu).setScale(5, RoundingMode.HALF_UP);
-        varianciaActual = new BigDecimal(sigma).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal(sigma * sigma).setScale(5, RoundingMode.HALF_UP);
     }
 
     //Distribución Beta
@@ -344,16 +336,11 @@ public class Graficos {
         BetaDistribution distribution = new BetaDistribution(valorAlfa, valorBeta);
 
         // Crear dataset
-        Function2D beta = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D beta = (double x) -> distribution.density(x);
 
         String leyenda = "Beta(" + valorAlfa + "," + valorBeta + ")";
 
-        XYSeries series = null;
+        XYSeries series;
         try { //Elegir conjunto soporte, [0;1] o (0,1)
             series = DatasetUtils.sampleFunction2DToSeries(beta, 0, 1, 1000, leyenda);
         } catch (Exception soportInc) {
@@ -383,16 +370,11 @@ public class Graficos {
         BetaDistribution distribution = new BetaDistribution(valorAlfa, valorBeta);
 
         // Crear dataset
-        Function2D beta = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D beta = (double x1) -> distribution.density(x1);
 
         String leyenda = "Beta(" + valorAlfa + "," + valorBeta + ")";
 
-        XYSeries series = null;
+        XYSeries series;
         try { //Elegir conjunto soporte, [0;1] o (0,1)
             series = DatasetUtils.sampleFunction2DToSeries(beta, 0, 1, 1000, leyenda);
         } catch (Exception soportInc) {
@@ -480,15 +462,10 @@ public class Graficos {
         BetaDistribution distribution = new BetaDistribution(valorAlfa, valorBeta);
 
         // Crear dataset
-        Function2D beta = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D beta = (double x) -> distribution.density(x);
 
         String leyenda = "Beta(" + valorAlfa + "," + valorBeta + ")";
-        XYSeries series = null;
+        XYSeries series;
         try { //Elegir conjunto soporte, [0;1] o (0,1)
             series = DatasetUtils.sampleFunction2DToSeries(beta, 0, 1, 1000, leyenda);
         } catch (Exception soportInc) {
@@ -591,12 +568,7 @@ public class Graficos {
         }
 
         // Crear dataset
-        Function2D chi = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D chi = (double x) -> distribution.density(x);
 
         String leyenda = "Χ (" + k + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(chi, minimo, maximo, 1000, leyenda);
@@ -650,12 +622,7 @@ public class Graficos {
         }
 
         // Crear dataset
-        Function2D chi = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D chi = (double x1) -> distribution.density(x1);
 
         String leyenda = "Χ (" + k + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(chi, minimo, maximo, 1000, leyenda);
@@ -766,12 +733,7 @@ public class Graficos {
         }
 
         // Crear dataset
-        Function2D chi = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D chi = (double x) -> distribution.density(x);
 
         String leyenda = "Χ (" + k + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(chi, minimo, maximo, 1000, leyenda);
@@ -851,12 +813,7 @@ public class Graficos {
         ExponentialDistribution distribution = new ExponentialDistribution(1 / lambda);
 
         // Crear dataset
-        Function2D exponencial = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D exponencial = (double x) -> distribution.density(x);
 
         String leyenda = "Exp (" + lambda + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(exponencial, 0, (1 / lambda) * 10, 1000, leyenda);
@@ -884,12 +841,7 @@ public class Graficos {
         ExponentialDistribution distribution = new ExponentialDistribution(1 / lambda);
 
         // Crear dataset
-        Function2D exponencial = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D exponencial = (double x1) -> distribution.density(x1);
 
         String leyenda = "Exp (" + lambda + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(exponencial, 0, (1 / lambda) * 10, 1000, leyenda);
@@ -999,12 +951,7 @@ public class Graficos {
         ExponentialDistribution distribution = new ExponentialDistribution(1 / lambda);
 
         // Crear dataset
-        Function2D exponencial = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D exponencial = (double x) -> distribution.density(x);
 
         String leyenda = "Exp (" + lambda + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(exponencial, 0, (1 / lambda) * 10, 1000, leyenda);
@@ -1076,12 +1023,7 @@ public class Graficos {
         FDistribution distribution = new FDistribution(df1, df2);
 
         // Crear dataset
-        Function2D f = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D f = (double x) -> distribution.density(x);
 
         String leyenda = "F(" + df1 + "," + df2 + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(f, 0, 6, 1000, leyenda);
@@ -1116,12 +1058,7 @@ public class Graficos {
         FDistribution distribution = new FDistribution(df1, df2);
 
         // Crear dataset
-        Function2D f = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D f = (double x1) -> distribution.density(x1);
 
         String leyenda = "F(" + df1 + "," + df2 + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(f, 0, 100, 1000, leyenda);
@@ -1215,12 +1152,7 @@ public class Graficos {
         FDistribution distribution = new FDistribution(df1, df2);
 
         // Crear dataset
-        Function2D f = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D f = (double x) -> distribution.density(x);
 
         String leyenda = "F(" + df1 + "," + df2 + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(f, 0, 100, 1000, leyenda);
@@ -1305,12 +1237,7 @@ public class Graficos {
         double desvio = Math.sqrt(variancia);
 
         // Crear dataset
-        Function2D gama = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D gama = (double x) -> distribution.density(x);
 
         String leyenda = "Gama(" + valorAlfa + "," + valorBeta + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(gama, 0, media + 4.5 * desvio, 1000, leyenda);
@@ -1343,12 +1270,7 @@ public class Graficos {
         double desvio = Math.sqrt(variancia);
 
         // Crear dataset
-        Function2D gama = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D gama = (double x1) -> distribution.density(x1);
 
         String leyenda = "Gama(" + valorAlfa + "," + valorBeta + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(gama, 0, media + 4.5 * desvio, 1000, leyenda);
@@ -1440,12 +1362,7 @@ public class Graficos {
         double desvio = Math.sqrt(variancia);
 
         // Crear dataset
-        Function2D gama = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D gama = (double x) -> distribution.density(x);
 
         String leyenda = "Gama(" + valorAlfa + "," + valorBeta + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(gama, 0, media + 4.5 * desvio, 1000, leyenda);
@@ -1517,6 +1434,621 @@ public class Graficos {
         varianciaActual = new BigDecimal(variancia).setScale(5, RoundingMode.HALF_UP);
     }
 
+    //Distribución LogNormal
+    static void PlotLogNormal(double mu, double sigma) {
+
+        ///Crear distribución
+        LogNormalDistribution distribution = new LogNormalDistribution(mu, sigma);
+
+        // Crear dataset
+        Function2D lognormal = (double x) -> distribution.density(x);
+
+        double end = 0;
+        for (double max = Math.exp(mu - Math.pow(sigma, 2)); distribution.cumulativeProbability(max) <= 0.999; max += sigma / 2) {
+            end = max;
+        }
+
+        String leyenda = "Log-normal(" + mu + "," + sigma + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(lognormal, 0, end, 1000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        double upper = 0;
+        for (double max = Math.exp(mu - Math.pow(sigma, 2)); distribution.cumulativeProbability(max) <= 0.995; max += sigma / 2) {
+            upper = max;
+        }
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución log-normal", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(0, upper);
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        // Actualizar momentos
+        esperanzaActual = new BigDecimal(Math.exp(mu + (sigma * sigma) / 2)).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal((Math.exp(sigma * sigma) - 1) * Math.exp(2 * mu + sigma * sigma)).setScale(5, RoundingMode.HALF_UP);
+    }
+
+    static void PlotLogNormalX(double mu, double sigma, double x, String direccion) {
+
+        ///Crear distribución
+        LogNormalDistribution distribution = new LogNormalDistribution(mu, sigma);
+
+        // Crear dataset
+        Function2D lognormal = (double xd) -> distribution.density(xd);
+
+        double end = 0;
+        for (double max = Math.exp(mu - Math.pow(sigma, 2)); distribution.cumulativeProbability(max) <= 0.999; max += sigma / 2) {
+            end = max;
+        }
+
+        String leyenda = "Log-normal(" + mu + "," + sigma + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(lognormal, 0, end, 1000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        double upper = 0;
+        for (double max = Math.exp(mu - Math.pow(sigma, 2)); distribution.cumulativeProbability(max) <= 0.995; max += sigma / 2) {
+            upper = max;
+        }
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución log-normal", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(0, upper);
+
+        //Añadir área
+        XYAreaRenderer renderer = new XYAreaRenderer();
+        renderer.setSeriesPaint(0, new Color(200, 200, 255));
+        XYPlot plot = chart.getXYPlot();
+        plot.setRenderer(1, renderer);
+        XYSeries areaSeries = new XYSeries("Área");
+
+        //Graficar según dirección
+        double maximo = dataset.getDomainUpperBound(true);
+        double minimo = dataset.getDomainLowerBound(true);
+        switch (direccion) {
+            case "mayor": {
+                BigDecimal probabilidadRedon;
+                //Evitar numeros muy grandes
+                try {
+                    double probabilidad = distribution.probability(x, maximo);
+                    probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
+
+                    if (x < minimo) {
+                        probabilidadRedon = new BigDecimal(1);
+
+                        //Definir eje
+                        for (double ejeX = minimo; ejeX <= maximo; ejeX += 0.01) {
+                            double y = distribution.density(ejeX);
+                            areaSeries.add(ejeX, y);
+                        }
+                        plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                    } else {
+                        //Definir eje
+                        for (double ejeX = x; ejeX <= maximo; ejeX += 0.01) {
+                            double y = distribution.density(ejeX);
+                            areaSeries.add(ejeX, y);
+                        }
+                        plot.setDataset(1, new XYSeriesCollection(areaSeries));
+                    }
+
+                } catch (Exception NumberIsTooLargeException) {
+
+                    probabilidadRedon = new BigDecimal(0);
+
+                }
+
+                //Actualizar campo texto
+                inputProb.setText(probabilidadRedon.toString());
+                break;
+            }
+            case "menor": {
+                BigDecimal probabilidadRedon;
+                //Evita numeros muy grandes
+                try {
+                    double probabilidad = distribution.probability(minimo, x);
+                    probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
+
+                    if (x > maximo) {
+                        probabilidadRedon = new BigDecimal(1);
+
+                        for (double ejeX = minimo; ejeX <= maximo; ejeX += 0.01) {
+                            double y = distribution.density(ejeX);
+                            areaSeries.add(ejeX, y);
+                        }
+                        plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                    } else {
+                        for (double ejeX = minimo; ejeX <= x; ejeX += 0.01) {
+                            double y = distribution.density(ejeX);
+                            areaSeries.add(ejeX, y);
+                        }
+                        plot.setDataset(1, new XYSeriesCollection(areaSeries));
+                    }
+                } catch (Exception NumberIsTooLargeException) {
+                    probabilidadRedon = new BigDecimal(0);
+
+                }
+
+                inputProb.setText(probabilidadRedon.toString());
+                break;
+            }
+            case "doble": {
+                BigDecimal probabilidadRedon;
+                try {
+                    double probabilidad = distribution.probability(minimo, -Math.abs(x)) + distribution.probability(Math.abs(x), maximo);
+                    probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
+
+                    for (double ejeX = minimo; ejeX <= -Math.abs(x); ejeX += 0.01) {
+                        double y = distribution.density(ejeX);
+                        areaSeries.add(ejeX, y);
+                    }
+                    plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                    //Segundo render
+                    XYAreaRenderer renderer2 = new XYAreaRenderer();
+                    renderer2.setSeriesPaint(0, new Color(200, 200, 255));
+                    plot.setRenderer(2, renderer2);
+                    XYSeries areaSeries2 = new XYSeries("Área");
+
+                    for (double ejeX = Math.abs(x); ejeX <= maximo; ejeX += 0.01) {
+                        double y = distribution.density(ejeX);
+                        areaSeries2.add(ejeX, y);
+                    }
+                    plot.setDataset(2, new XYSeriesCollection(areaSeries2));
+
+                } catch (Exception NumberIsTooLargeException) {
+                    probabilidadRedon = new BigDecimal(0);
+                }
+
+                //Actualizar campo texto
+                inputProb.setText(probabilidadRedon.toString());
+                break;
+            }
+            default:
+                break;
+        }
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        // Actualizar momentos
+        esperanzaActual = new BigDecimal(Math.exp(mu + (sigma * sigma) / 2)).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal((Math.exp(sigma * sigma) - 1) * Math.exp(2 * mu + sigma * sigma)).setScale(5, RoundingMode.HALF_UP);
+    }
+
+    static void PlotLogNormalP(double mu, double sigma, double prob, String direccion) {
+
+        ///Crear distribución
+        LogNormalDistribution distribution = new LogNormalDistribution(mu, sigma);
+
+        // Crear dataset
+        Function2D lognormal = (double x) -> distribution.density(x);
+
+        double end = 0;
+        for (double max = Math.exp(mu - Math.pow(sigma, 2)); distribution.cumulativeProbability(max) <= 0.999; max += sigma / 2) {
+            end = max;
+        }
+
+        String leyenda = "Log-normal(" + mu + "," + sigma + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(lognormal, 0, end, 1000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        double upper = 0;
+        for (double max = Math.exp(mu - Math.pow(sigma, 2)); distribution.cumulativeProbability(max) <= 0.995; max += sigma / 2) {
+            upper = max;
+        }
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución log-normal", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(0, upper);
+
+        //Añadir área
+        XYAreaRenderer renderer = new XYAreaRenderer();
+        renderer.setSeriesPaint(0, new Color(200, 200, 255));
+        XYPlot plot = chart.getXYPlot();
+        plot.setRenderer(1, renderer);
+        XYSeries areaSeries = new XYSeries("Área");
+
+        //Graficar según dirección
+        double maximo = dataset.getDomainUpperBound(true);
+        double minimo = dataset.getDomainLowerBound(true);
+
+        switch (direccion) {
+            case "mayor": {
+                double valorX = distribution.inverseCumulativeProbability(1 - prob);
+                BigDecimal xRedon = new BigDecimal(valorX).setScale(5, RoundingMode.HALF_UP);
+
+                //Definir eje
+                for (double ejeX = valorX; ejeX <= maximo; ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries.add(ejeX, y);
+                }
+                plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                //Actualizar campo texto
+                inputX.setText(xRedon.toString());
+                break;
+            }
+            case "menor": {
+                double valorX = distribution.inverseCumulativeProbability(prob);
+                BigDecimal xRedon = new BigDecimal(valorX).setScale(5, RoundingMode.HALF_UP);
+
+                //Definir eje
+                for (double ejeX = minimo; ejeX <= valorX; ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries.add(ejeX, y);
+                }
+                plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                //Actualizar campo texto
+                inputX.setText(xRedon.toString());
+                break;
+            }
+            case "doble": {
+                double valorX = distribution.inverseCumulativeProbability(prob / 2);
+                BigDecimal xRedon = new BigDecimal(Math.abs(valorX)).setScale(5, RoundingMode.HALF_UP);
+
+                for (double ejeX = minimo; ejeX <= -Math.abs(valorX); ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries.add(ejeX, y);
+                }
+                plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                //Segundo render
+                XYAreaRenderer renderer2 = new XYAreaRenderer();
+                renderer2.setSeriesPaint(0, new Color(200, 200, 255));
+                plot.setRenderer(2, renderer2);
+                XYSeries areaSeries2 = new XYSeries("Área");
+
+                for (double ejeX = Math.abs(valorX); ejeX <= maximo; ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries2.add(ejeX, y);
+                }
+                plot.setDataset(2, new XYSeriesCollection(areaSeries2));
+
+                //Actualizar campo texto
+                inputX.setText(xRedon.toString());
+                break;
+            }
+            default:
+                break;
+        }
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        // Actualizar momentos
+        esperanzaActual = new BigDecimal(Math.exp(mu + (sigma * sigma) / 2)).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal((Math.exp(sigma * sigma) - 1) * Math.exp(2 * mu + sigma * sigma)).setScale(5, RoundingMode.HALF_UP);
+    }
+
+    //Distribución Pareto
+    static void PlotPareto(double valorAlfa, double valorM) {
+        ///Crear distribución
+        ParetoDistribution distribution = new ParetoDistribution(valorM, valorAlfa);
+
+        // Crear dataset
+        Function2D pareto = (double x) -> distribution.density(x);
+
+        double end = valorM;
+        for (double max = valorM; distribution.cumulativeProbability(max) <= 0.9999; max += (0.1 * valorM)) {
+            end = max;
+        }
+
+        String leyenda = "Pareto(" + valorAlfa + "," + valorM + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(pareto, valorM, end, 20000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        double upper = end;
+        for (double i = valorM; distribution.density(i) >= 0.0025 * (valorAlfa / valorM); i += (0.1 * valorM)) {
+            upper = i;
+        }
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución Pareto tipo I", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(valorM, upper);
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        // Actualizar momentos
+        if (valorAlfa > 1) {
+            esperanzaActual = new BigDecimal((valorAlfa * valorM) / (valorAlfa - 1)).setScale(5, RoundingMode.HALF_UP);
+        }
+
+        if (valorAlfa > 2) {
+            varianciaActual = new BigDecimal((valorAlfa * Math.pow(valorM, 2)) / (Math.pow(valorAlfa - 1, 2) * (valorAlfa - 2))).setScale(5, RoundingMode.HALF_UP);
+        }
+
+    }
+
+    static void PlotParetoX(double valorAlfa, double valorM, double x, String direccion) {
+        ///Crear distribución
+        ParetoDistribution distribution = new ParetoDistribution(valorM, valorAlfa);
+
+        // Crear dataset
+        Function2D pareto = (double xd) -> distribution.density(xd);
+
+        double end = valorM;
+        for (double max = valorM; distribution.cumulativeProbability(max) <= 0.9999; max += (0.1 * valorM)) {
+            end = max;
+        }
+
+        String leyenda = "Pareto(" + valorAlfa + "," + valorM + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(pareto, valorM, end, 20000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        double upper = end;
+        for (double i = valorM; distribution.density(i) >= 0.0025 * (valorAlfa / valorM); i += (0.1 * valorM)) {
+            upper = i;
+        }
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución Pareto tipo I", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(valorM, upper);
+
+        //Añadir área
+        XYAreaRenderer renderer = new XYAreaRenderer();
+        renderer.setSeriesPaint(0, new Color(200, 200, 255));
+        XYPlot plot = chart.getXYPlot();
+        plot.setRenderer(1, renderer);
+        XYSeries areaSeries = new XYSeries("Área");
+
+        //Graficar según dirección
+        double maximo = dataset.getDomainUpperBound(true);
+        double minimo = dataset.getDomainLowerBound(true);
+        switch (direccion) {
+            case "mayor": {
+                BigDecimal probabilidadRedon;
+                //Evitar numeros muy grandes
+                try {
+                    double probabilidad = distribution.probability(x, maximo);
+                    probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
+
+                    if (x < minimo) {
+                        probabilidadRedon = new BigDecimal(1);
+
+                        //Definir eje
+                        for (double ejeX = minimo; ejeX <= maximo; ejeX += 0.01) {
+                            double y = distribution.density(ejeX);
+                            areaSeries.add(ejeX, y);
+                        }
+                        plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                    } else {
+                        //Definir eje
+                        for (double ejeX = x; ejeX <= maximo; ejeX += 0.01) {
+                            double y = distribution.density(ejeX);
+                            areaSeries.add(ejeX, y);
+                        }
+                        plot.setDataset(1, new XYSeriesCollection(areaSeries));
+                    }
+
+                } catch (Exception NumberIsTooLargeException) {
+
+                    probabilidadRedon = new BigDecimal(0);
+
+                }
+
+                //Actualizar campo texto
+                inputProb.setText(probabilidadRedon.toString());
+                break;
+            }
+            case "menor": {
+                BigDecimal probabilidadRedon;
+                //Evita numeros muy grandes
+                try {
+                    double probabilidad = distribution.probability(minimo, x);
+                    probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
+
+                    if (x > maximo) {
+                        probabilidadRedon = new BigDecimal(1);
+
+                        for (double ejeX = minimo; ejeX <= maximo; ejeX += 0.01) {
+                            double y = distribution.density(ejeX);
+                            areaSeries.add(ejeX, y);
+                        }
+                        plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                    } else {
+                        for (double ejeX = minimo; ejeX <= x; ejeX += 0.01) {
+                            double y = distribution.density(ejeX);
+                            areaSeries.add(ejeX, y);
+                        }
+                        plot.setDataset(1, new XYSeriesCollection(areaSeries));
+                    }
+                } catch (Exception NumberIsTooLargeException) {
+                    probabilidadRedon = new BigDecimal(0);
+
+                }
+
+                inputProb.setText(probabilidadRedon.toString());
+                break;
+            }
+            case "doble": {
+                BigDecimal probabilidadRedon;
+                try {
+                    double probabilidad = distribution.probability(minimo, -Math.abs(x)) + distribution.probability(Math.abs(x), maximo);
+                    probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
+
+                    for (double ejeX = minimo; ejeX <= -Math.abs(x); ejeX += 0.01) {
+                        double y = distribution.density(ejeX);
+                        areaSeries.add(ejeX, y);
+                    }
+                    plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                    //Segundo render
+                    XYAreaRenderer renderer2 = new XYAreaRenderer();
+                    renderer2.setSeriesPaint(0, new Color(200, 200, 255));
+                    plot.setRenderer(2, renderer2);
+                    XYSeries areaSeries2 = new XYSeries("Área");
+
+                    for (double ejeX = Math.abs(x); ejeX <= maximo; ejeX += 0.01) {
+                        double y = distribution.density(ejeX);
+                        areaSeries2.add(ejeX, y);
+                    }
+                    plot.setDataset(2, new XYSeriesCollection(areaSeries2));
+
+                } catch (Exception NumberIsTooLargeException) {
+                    probabilidadRedon = new BigDecimal(0);
+                }
+
+                //Actualizar campo texto
+                inputProb.setText(probabilidadRedon.toString());
+                break;
+            }
+            default:
+                break;
+        }
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        // Actualizar momentos
+        if (valorAlfa > 1) {
+            esperanzaActual = new BigDecimal((valorAlfa * valorM) / (valorAlfa - 1)).setScale(5, RoundingMode.HALF_UP);
+        }
+
+        if (valorAlfa > 2) {
+            varianciaActual = new BigDecimal((valorAlfa * Math.pow(valorM, 2)) / (Math.pow(valorAlfa - 1, 2) * (valorAlfa - 2))).setScale(5, RoundingMode.HALF_UP);
+        }
+    }
+
+    static void PlotParetoP(double valorAlfa, double valorM, double prob, String direccion) {
+        ///Crear distribución
+        ParetoDistribution distribution = new ParetoDistribution(valorM, valorAlfa);
+
+        // Crear dataset
+        Function2D pareto = (double x) -> distribution.density(x);
+
+        double end = valorM;
+        for (double max = valorM; distribution.cumulativeProbability(max) <= 0.9999; max += (0.1 * valorM)) {
+            end = max;
+        }
+
+        String leyenda = "Pareto(" + valorAlfa + "," + valorM + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(pareto, valorM, end, 20000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        double upper = end;
+        for (double i = valorM; distribution.density(i) >= 0.0025 * (valorAlfa / valorM); i += (0.1 * valorM)) {
+            upper = i;
+        }
+
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución Pareto tipo I", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(valorM, upper);
+
+        //Añadir área
+        XYAreaRenderer renderer = new XYAreaRenderer();
+        renderer.setSeriesPaint(0, new Color(200, 200, 255));
+        XYPlot plot = chart.getXYPlot();
+        plot.setRenderer(1, renderer);
+        XYSeries areaSeries = new XYSeries("Área");
+
+        //Graficar según dirección
+        double maximo = dataset.getDomainUpperBound(true);
+        double minimo = dataset.getDomainLowerBound(true);
+
+        switch (direccion) {
+            case "mayor": {
+                double valorX = distribution.inverseCumulativeProbability(1 - prob);
+                BigDecimal xRedon = new BigDecimal(valorX).setScale(5, RoundingMode.HALF_UP);
+
+                //Definir eje
+                for (double ejeX = valorX; ejeX <= maximo; ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries.add(ejeX, y);
+                }
+                plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                //Actualizar campo texto
+                inputX.setText(xRedon.toString());
+                break;
+            }
+            case "menor": {
+                double valorX = distribution.inverseCumulativeProbability(prob);
+                BigDecimal xRedon = new BigDecimal(valorX).setScale(5, RoundingMode.HALF_UP);
+
+                //Definir eje
+                for (double ejeX = minimo; ejeX <= valorX; ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries.add(ejeX, y);
+                }
+                plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                //Actualizar campo texto
+                inputX.setText(xRedon.toString());
+                break;
+            }
+            case "doble": {
+                double valorX = distribution.inverseCumulativeProbability(prob / 2);
+                BigDecimal xRedon = new BigDecimal(Math.abs(valorX)).setScale(5, RoundingMode.HALF_UP);
+
+                for (double ejeX = minimo; ejeX <= -Math.abs(valorX); ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries.add(ejeX, y);
+                }
+                plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                //Segundo render
+                XYAreaRenderer renderer2 = new XYAreaRenderer();
+                renderer2.setSeriesPaint(0, new Color(200, 200, 255));
+                plot.setRenderer(2, renderer2);
+                XYSeries areaSeries2 = new XYSeries("Área");
+
+                for (double ejeX = Math.abs(valorX); ejeX <= maximo; ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries2.add(ejeX, y);
+                }
+                plot.setDataset(2, new XYSeriesCollection(areaSeries2));
+
+                //Actualizar campo texto
+                inputX.setText(xRedon.toString());
+                break;
+            }
+            default:
+                break;
+        }
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        // Actualizar momentos
+        if (valorAlfa > 1) {
+            esperanzaActual = new BigDecimal((valorAlfa * valorM) / (valorAlfa - 1)).setScale(5, RoundingMode.HALF_UP);
+        }
+
+        if (valorAlfa > 2) {
+            varianciaActual = new BigDecimal((valorAlfa * Math.pow(valorM, 2)) / (Math.pow(valorAlfa - 1, 2) * (valorAlfa - 2))).setScale(5, RoundingMode.HALF_UP);
+        }
+    }
+
     //Distribución t de Student
     static void PlotStu(double valorV) {
 
@@ -1524,12 +2056,7 @@ public class Graficos {
         TDistribution distribution = new TDistribution(valorV);
 
         // Crear dataset
-        Function2D TDist = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D TDist = (double x) -> distribution.density(x);
 
         // Limites
         int limite = -1;
@@ -1575,12 +2102,7 @@ public class Graficos {
         TDistribution distribution = new TDistribution(valorV);
 
         // Crear dataset
-        Function2D TDist = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D TDist = (double x1) -> distribution.density(x1);
 
         // Limites
         int limite = -1;
@@ -1739,12 +2261,7 @@ public class Graficos {
         TDistribution distribution = new TDistribution(valorV);
 
         // Crear dataset
-        Function2D TDist = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D TDist = (double x) -> distribution.density(x);
 
         // Limites
         int limite = -1;
@@ -1853,19 +2370,14 @@ public class Graficos {
         }
     }
 
-    //Distribución Uniforme
+    //Distribución Uniforme Continua
     static void PlotUnifC(double valorA, double valorB) {
 
         ///Crear distribución
         UniformRealDistribution distribution = new UniformRealDistribution(valorA, valorB);
 
         // Crear dataset
-        Function2D uniforme = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D uniforme = (double x) -> distribution.density(x);
 
         String leyenda = "U(" + valorA + "," + valorB + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(uniforme, valorA, valorB, 1000, leyenda);
@@ -1888,18 +2400,13 @@ public class Graficos {
 
     }
 
-    static void PlotUnifCX(double valorA, double valorB, double valorX, String direccion) {
+    static void PlotUnifCX(double valorA, double valorB, double x, String direccion) {
 
         ///Crear distribución
         UniformRealDistribution distribution = new UniformRealDistribution(valorA, valorB);
 
         // Crear dataset
-        Function2D uniforme = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D uniforme = (double x1) -> distribution.density(x1);
 
         String leyenda = "U(" + valorA + "," + valorB + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(uniforme, valorA, valorB, 1000, leyenda);
@@ -1925,10 +2432,10 @@ public class Graficos {
                 BigDecimal probabilidadRedon;
                 //Evitar numeros muy grandes
                 try {
-                    double probabilidad = distribution.probability(valorX, valorB);
+                    double probabilidad = distribution.probability(x, valorB);
                     probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
 
-                    for (double ejeX = valorX; ejeX <= valorB; ejeX += 0.01) {
+                    for (double ejeX = x; ejeX <= valorB; ejeX += 0.01) {
                         double y = distribution.density(ejeX);
                         areaSeries.add(ejeX, y);
                     }
@@ -1948,10 +2455,10 @@ public class Graficos {
                 BigDecimal probabilidadRedon;
                 //Evita numeros muy grandes
                 try {
-                    double probabilidad = distribution.probability(valorA, valorX);
+                    double probabilidad = distribution.probability(valorA, x);
                     probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
 
-                    for (double ejeX = valorA; ejeX <= valorX; ejeX += 0.01) {
+                    for (double ejeX = valorA; ejeX <= x; ejeX += 0.01) {
                         double y = distribution.density(ejeX);
                         areaSeries.add(ejeX, y);
                     }
@@ -1985,12 +2492,7 @@ public class Graficos {
         UniformRealDistribution distribution = new UniformRealDistribution(valorA, valorB);
 
         // Crear dataset
-        Function2D uniforme = new Function2D() {
-            @Override
-            public double getValue(double x) {
-                return distribution.density(x);
-            }
-        };
+        Function2D uniforme = (double x) -> distribution.density(x);
 
         String leyenda = "U(" + valorA + "," + valorB + ")";
         XYSeries series = DatasetUtils.sampleFunction2DToSeries(uniforme, valorA, valorB, 1000, leyenda);
@@ -2051,6 +2553,260 @@ public class Graficos {
         // Actualizar momentos
         esperanzaActual = new BigDecimal((valorA + valorB) / 2).setScale(5, RoundingMode.HALF_UP);
         varianciaActual = new BigDecimal((Math.pow(valorB - valorA, 2)) / 12).setScale(5, RoundingMode.HALF_UP);
+    }
+
+    //Distribución Weibull
+    static void PlotWeibull(double valorEta, double valorBeta) {
+
+        ///Crear distribución
+        WeibullDistribution distribution = new WeibullDistribution(valorEta, valorBeta);
+
+        //Media y variancia
+        double media = valorBeta * Gamma.gamma(1 + (1 / valorEta));
+        double variancia = Math.pow(valorBeta, 2) * (Gamma.gamma(1 + (2 / valorEta)) - Math.pow(Gamma.gamma(1 + (1 / valorEta)), 2));
+        double desvio = Math.sqrt(variancia);
+
+        //Límites
+        double start = 0;
+        double end = media + 3 * desvio;
+
+        for (double min = media; distribution.cumulativeProbability(min) >= 0.0005; min -= desvio) {
+            start = min;
+        }
+        if ((start -= desvio) < 0) { //Si es muy cercano a cero, utilizar cero
+            start = 0;
+        }
+
+        for (double max = media; distribution.cumulativeProbability(max) <= 0.99999; max += desvio / 2) {
+            end = max;
+        }
+
+        // Crear dataset
+        Function2D f = (double x) -> distribution.density(x);
+
+        String leyenda = "Weibull(" + valorEta + "," + valorBeta + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(f, start, end, 1000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución Weibull", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(start, end);
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        // Actualizar momentos
+        esperanzaActual = new BigDecimal(media).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal(variancia).setScale(5, RoundingMode.HALF_UP);
+    }
+
+    static void PlotWeibullX(double valorEta, double valorBeta, double x, String direccion) {
+
+        ///Crear distribución
+        WeibullDistribution distribution = new WeibullDistribution(valorEta, valorBeta);
+
+        //Media y variancia
+        double media = valorBeta * Gamma.gamma(1 + (1 / valorEta));
+        double variancia = Math.pow(valorBeta, 2) * (Gamma.gamma(1 + (2 / valorEta)) - Math.pow(Gamma.gamma(1 + (1 / valorEta)), 2));
+        double desvio = Math.sqrt(variancia);
+
+        //Límites
+        double start = 0;
+        double end = media + 3 * desvio;
+
+        for (double min = media; distribution.cumulativeProbability(min) >= 0.0005; min -= desvio) {
+            start = min;
+        }
+        if ((start -= desvio) < 0) { //Si es muy cercano a cero, utilizar cero
+            start = 0;
+        }
+
+        for (double max = media; distribution.cumulativeProbability(max) <= 0.99999; max += desvio / 2) {
+            end = max;
+        }
+
+        // Crear dataset
+        Function2D f = (double x1) -> distribution.density(x1);
+
+        String leyenda = "Weibull(" + valorEta + "," + valorBeta + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(f, start, end, 1000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución Weibull", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(start, end);
+
+        //Añadir área
+        XYAreaRenderer renderer = new XYAreaRenderer();
+        renderer.setSeriesPaint(0, new Color(200, 200, 255));
+        XYPlot plot = chart.getXYPlot();
+        plot.setRenderer(1, renderer);
+        XYSeries areaSeries = new XYSeries("Área");
+
+        //Graficar según dirección
+        double maximo = dataset.getDomainUpperBound(true);
+        double minimo = dataset.getDomainLowerBound(true);
+        switch (direccion) {
+            case "mayor": {
+                BigDecimal probabilidadRedon;
+                //Evitar numeros muy grandes
+                try {
+                    double probabilidad = distribution.probability(x, maximo);
+                    probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
+
+                    for (double ejeX = x; ejeX <= maximo; ejeX += 0.01) {
+                        double y = distribution.density(ejeX);
+                        areaSeries.add(ejeX, y);
+                    }
+                    plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                } catch (Exception NumberIsTooLargeException) {
+
+                    probabilidadRedon = new BigDecimal(0);
+
+                }
+
+                //Actualizar campo texto
+                inputProb.setText(probabilidadRedon.toString());
+                break;
+            }
+            case "menor": {
+                BigDecimal probabilidadRedon;
+                //Evita numeros muy grandes
+                try {
+                    double probabilidad = distribution.probability(minimo, x);
+                    probabilidadRedon = new BigDecimal(probabilidad).setScale(5, RoundingMode.HALF_UP);
+
+                    for (double ejeX = minimo; ejeX <= x; ejeX += 0.01) {
+                        double y = distribution.density(ejeX);
+                        areaSeries.add(ejeX, y);
+                    }
+                    plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                } catch (Exception NumberIsTooLargeException) {
+                    probabilidadRedon = new BigDecimal(0);
+
+                }
+
+                inputProb.setText(probabilidadRedon.toString());
+                break;
+            }
+            default:
+                break;
+        }
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        // Actualizar momentos
+        esperanzaActual = new BigDecimal(media).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal(variancia).setScale(5, RoundingMode.HALF_UP);
+    }
+
+    static void PlotWeibullP(double valorEta, double valorBeta, double prob, String direccion) {
+
+        ///Crear distribución
+        WeibullDistribution distribution = new WeibullDistribution(valorEta, valorBeta);
+
+        //Media y variancia
+        double media = valorBeta * Gamma.gamma(1 + (1 / valorEta));
+        double variancia = Math.pow(valorBeta, 2) * (Gamma.gamma(1 + (2 / valorEta)) - Math.pow(Gamma.gamma(1 + (1 / valorEta)), 2));
+        double desvio = Math.sqrt(variancia);
+
+        //Límites
+        double start = 0;
+        double end = media + 3 * desvio;
+
+        for (double min = media; distribution.cumulativeProbability(min) >= 0.0005; min -= desvio) {
+            start = min;
+        }
+        if ((start -= desvio) < 0) { //Si es muy cercano a cero, utilizar cero
+            start = 0;
+        }
+
+        for (double max = media; distribution.cumulativeProbability(max) <= 0.99999; max += desvio / 2) {
+            end = max;
+        }
+
+        // Crear dataset
+        Function2D f = (double x) -> distribution.density(x);
+
+        String leyenda = "Weibull(" + valorEta + "," + valorBeta + ")";
+        XYSeries series = DatasetUtils.sampleFunction2DToSeries(f, start, end, 1000, leyenda);
+        XYSeriesCollection dataset = new XYSeriesCollection(series);
+
+        //Crear gráfico
+        JFreeChart chart = ChartFactory.createXYLineChart(
+                "Distribución Weibull", "x", "f(x)", dataset,
+                PlotOrientation.VERTICAL, true, true, false);
+        chart.getPlot().setBackgroundPaint(Color.WHITE);
+        chart.getXYPlot().getDomainAxis().setRange(start, end);
+
+        // Actualizar gráfico
+        graficoDist.setVisible(true);
+        graficoDist.setChart(chart);
+
+        //Añadir área
+        XYAreaRenderer renderer = new XYAreaRenderer();
+        renderer.setSeriesPaint(0, new Color(200, 200, 255));
+        XYPlot plot = chart.getXYPlot();
+        plot.setRenderer(1, renderer);
+        XYSeries areaSeries = new XYSeries("Área");
+
+        //Grafico
+        double maximo = dataset.getDomainUpperBound(true);
+        double minimo = dataset.getDomainLowerBound(true);
+        switch (direccion) {
+            case "mayor": {
+                double valorX = distribution.inverseCumulativeProbability(1 - prob);
+                BigDecimal xRedon = new BigDecimal(valorX).setScale(5, RoundingMode.HALF_UP);
+
+                //Definir eje
+                for (double ejeX = valorX; ejeX <= maximo; ejeX += 0.01) {
+                    double y = distribution.density(ejeX);
+                    areaSeries.add(ejeX, y);
+                }
+                plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                //Actualizar campo texto
+                inputX.setText(xRedon.toString());
+                break;
+            }
+            case "menor": {
+                double valorX = distribution.inverseCumulativeProbability(prob);
+                BigDecimal xRedon = new BigDecimal(valorX).setScale(5, RoundingMode.HALF_UP);
+
+                //Definir eje
+                if (valorX <= maximo) {
+                    for (double ejeX = minimo; ejeX <= valorX; ejeX += 0.01) {
+                        double y = distribution.density(ejeX);
+                        areaSeries.add(ejeX, y);
+                    }
+                } else {
+                    for (double ejeX = minimo; ejeX <= maximo; ejeX += 0.01) {
+                        double y = distribution.density(ejeX);
+                        areaSeries.add(ejeX, y);
+                    }
+                }
+                plot.setDataset(1, new XYSeriesCollection(areaSeries));
+
+                //Actualizar campo texto
+                inputX.setText(xRedon.toString());
+                break;
+            }
+        }
+
+        // Actualizar momentos
+        esperanzaActual = new BigDecimal(media).setScale(5, RoundingMode.HALF_UP);
+        varianciaActual = new BigDecimal(variancia).setScale(5, RoundingMode.HALF_UP);
     }
 
     //Distribución Binomial
@@ -2529,9 +3285,9 @@ public class Graficos {
 
                 XYSeries series2 = new XYSeries("P(X=" + x + ")");
 
-                int limiteSup = (int)dataset.getDomainUpperBound(false);
+                int limiteSup = (int) dataset.getDomainUpperBound(false);
                 for (int i = x; i <= limiteSup; i++) {
-                    series2.add(i, distribution.probability(i-r));
+                    series2.add(i, distribution.probability(i - r));
                 }
 
                 XYSeriesCollection dataset2 = new XYSeriesCollection(series2);
@@ -2559,7 +3315,7 @@ public class Graficos {
                 XYSeries series2 = new XYSeries("P(X=" + x + ")");
 
                 for (int i = 0; i <= x; i++) {
-                    series2.add(i, distribution.probability(i-r));
+                    series2.add(i, distribution.probability(i - r));
                 }
 
                 XYSeriesCollection dataset2 = new XYSeriesCollection(series2);
@@ -2704,7 +3460,7 @@ public class Graficos {
                 break;
             }
         }
-        
+
         // Actualizar gráfico
         graficoDist.setVisible(true);
         graficoDist.setChart(chart);
@@ -3052,7 +3808,7 @@ public class Graficos {
 
     }
 
-    //Distribución Uniforme
+    //Distribución Uniforme Discreta
     static void PlotUnifD(int valorA, int valorB) {
 
         ///Crear distribución

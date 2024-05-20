@@ -17,9 +17,11 @@ import java.awt.Font;
 public class Parametros {
 
     public static JTextField inputMu, inputSigma, inputLambda, inputn, inputp, inputV, inputDF1,
-            inputDF2, inputK, inputA, inputB, inputN, inputN1, inputAlfa, inputBeta, inputr;
+            inputDF2, inputK, inputA, inputB, inputN, inputN1, inputAlfa, inputBeta, inputr,
+            inputEta, inputM;
     public static JLabel labelSigma, labelMu, labelLambda, labeln, labelp, labelV, labelDF1,
-            labelDF2, labelK, labelA, labelB, labelN, labelN1, labelAlfa, labelBeta, labelr;
+            labelDF2, labelK, labelA, labelB, labelN, labelN1, labelAlfa, labelBeta, labelr,
+            labelEta, labelM;;
     public static String tipoDist;
 
     static void CrearParam(JPanel Panel) {
@@ -135,7 +137,7 @@ public class Parametros {
         //k - Label
         labelK = new JLabel("k = ");
         Font fontK = new Font(labelK.getFont().getName(), Font.BOLD, labelK.getFont().getSize());
-        labelK.setFont(fontDF1);
+        labelK.setFont(fontK);
         filaPar1.add(labelK);
         labelK.setVisible(false);
 
@@ -231,13 +233,39 @@ public class Parametros {
         inputBeta = new JTextField(3);
         filaPar2.add(inputBeta);
         inputBeta.setVisible(false);
+
+        ////Distribución Weibull
+        //Eta - label
+        labelEta = new JLabel("η = ");
+        Font fontEta = new Font(labelEta.getFont().getName(), Font.BOLD, labelEta.getFont().getSize());
+        labelEta.setFont(fontEta);
+        filaPar1.add(labelEta);
+        labelEta.setVisible(false);
+
+        //Eta - Campo texto
+        inputEta = new JTextField(3);
+        filaPar1.add(inputEta);
+        inputEta.setVisible(false);
+        
+        ////Distribución Pareto
+        //m - label
+        labelM = new JLabel("m = ");
+        Font fontM = new Font(labelM.getFont().getName(), Font.BOLD, labelM.getFont().getSize());
+        labelM.setFont(fontM);
+        filaPar2.add(labelM);
+        labelM.setVisible(false);
+
+        //Eta - Campo texto
+        inputM = new JTextField(3);
+        filaPar2.add(inputM);
+        inputM.setVisible(false);
     }
 
     static void ActualizarParam(String distribucion,
             JComboBox comboBoxProb,
             String[] optionsProbSim, String[] optionsProbDisc, String[] optionsProbCont) {
         //Resetear UI
-        //Normal
+        //Normal y Log-normal
         labelSigma.setVisible(false);
         labelMu.setVisible(false);
         inputMu.setVisible(false);
@@ -287,11 +315,22 @@ public class Parametros {
         //Beta o Gama
         labelAlfa.setVisible(false);
         inputAlfa.setVisible(false);
+        inputAlfa.setText("");
         labelBeta.setVisible(false);
         inputBeta.setVisible(false);
+        inputBeta.setText("");
         //Binomial negativa
         labelr.setVisible(false);
         inputr.setVisible(false);
+        inputr.setText("");
+        //Weibull
+        labelEta.setVisible(false);
+        inputEta.setVisible(false);
+        inputEta.setText("");
+        //Pareto
+        labelM.setVisible(false);
+        inputM.setVisible(false);
+        inputM.setText("");
 
         switch (distribucion) {
             case "Normal": {
@@ -338,6 +377,22 @@ public class Parametros {
                 tipoDist = "Continua";
                 break;
             }
+            case "Log-normal": {
+                labelSigma.setVisible(true);
+                labelMu.setVisible(true);
+                inputMu.setVisible(true);
+                inputSigma.setVisible(true);
+                tipoDist = "Continua";
+                break;
+            }
+            case "Pareto I": {
+                labelAlfa.setVisible(true);
+                inputAlfa.setVisible(true);
+                labelM.setVisible(true);
+                inputM.setVisible(true);
+                tipoDist = "Continua";
+                break;
+            }
             case "t de Student": {
                 labelV.setVisible(true);
                 inputV.setVisible(true);
@@ -349,6 +404,14 @@ public class Parametros {
                 inputA.setVisible(true);
                 labelB.setVisible(true);
                 inputB.setVisible(true);
+                tipoDist = "Continua";
+                break;
+            }
+            case "Weibull": {
+                labelEta.setVisible(true);
+                inputEta.setVisible(true);
+                labelBeta.setVisible(true);
+                inputBeta.setVisible(true);
                 tipoDist = "Continua";
                 break;
             }

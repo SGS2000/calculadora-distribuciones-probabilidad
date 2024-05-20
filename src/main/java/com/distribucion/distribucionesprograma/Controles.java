@@ -61,9 +61,9 @@ public class Controles {
             Graficos.labelError.setText("ERROR:");
             Graficos.textoError.setText("Complete todos los parámetros");
         } else {
-            double valorAlfa = Double.parseDouble(alfaString);
-            double valorBeta = Double.parseDouble(betaString);
             try {//Convertir a numérico
+                double valorAlfa = Double.parseDouble(alfaString);
+                double valorBeta = Double.parseDouble(betaString);
                 Graficos.labelError.setText("");
                 Graficos.textoError.setText("");
 
@@ -244,6 +244,152 @@ public class Controles {
         }
     }
 
+    static void ControlGama(String direccion) {
+        String alfaString = Parametros.inputAlfa.getText();
+        String betaString = Parametros.inputBeta.getText();
+        String xString = Graficos.inputX.getText();
+        String probString = Graficos.inputProb.getText();
+
+        if (alfaString.isEmpty() || betaString.isEmpty()) { //Evaluar casilleros vacios
+            Graficos.labelError.setText("ERROR:");
+            Graficos.textoError.setText("Complete todos los parámetros");
+        } else {
+            try {//Convertir a numérico
+                double valorAlfa = Double.parseDouble(alfaString);
+                double valorBeta = Double.parseDouble(betaString);
+                Graficos.labelError.setText("");
+                Graficos.textoError.setText("");
+
+                if (valorBeta <= 0 || valorAlfa <= 0) {
+                    Graficos.labelError.setText("ERROR:");
+                    Graficos.textoError.setText("α y β deben ser mayores a 0");
+                } else {
+                    if (!xString.isEmpty()) {
+                        double valorX = Double.parseDouble(xString);
+                        if (valorX <= 0) {
+                            Graficos.labelError.setText("ERROR:");
+                            Graficos.textoError.setText("x debe ser mayor a 0");
+                        } else {
+                            Graficos.PlotGamaX(valorAlfa, valorBeta, valorX, direccion);
+                        }
+
+                    } else if (!probString.isEmpty()) {
+                        double valorProb = Double.parseDouble(probString);
+                        if (valorProb <= 0 || valorProb >= 1) {
+                            Graficos.labelError.setText("ERROR:");
+                            Graficos.textoError.setText("La probabilidad debe estar entre 0 y 1");
+                        } else {
+                            Graficos.PlotGamaP(valorAlfa, valorBeta, valorProb, direccion);
+                        }
+                    } else {
+                        Graficos.PlotGama(valorAlfa, valorBeta);
+                    }
+                }
+
+            } catch (Exception valInc) {//Evaluar casilleros no numéricos
+                Graficos.labelError.setText("ERROR:");
+                Graficos.textoError.setText("Los valores deben ser numéricos");
+            }
+        }
+    }
+
+    static void ControlLogNormal(String direccion) {
+        String muString = Parametros.inputMu.getText();
+        String sigmaString = Parametros.inputSigma.getText();
+        String xString = Graficos.inputX.getText();
+        String probString = Graficos.inputProb.getText();
+
+        if (muString.isEmpty() || sigmaString.isEmpty()) { //Evaluar casilleros vacios
+            Graficos.labelError.setText("ERROR:");
+            Graficos.textoError.setText("Complete ambos parámetros");
+        } else {
+            try { //Convertir a numérico
+                Graficos.labelError.setText("");
+                Graficos.textoError.setText("");
+                double valorMu = Double.parseDouble(muString);
+                double valorSigma = Double.parseDouble(sigmaString);
+
+                if (valorSigma <= 0) {
+                    Graficos.labelError.setText("ERROR:");
+                    Graficos.textoError.setText("σ debe ser mayor a 0");
+                } else {
+                    if (!xString.isEmpty()) {
+                        double valorX = Double.parseDouble(xString);
+                        if (valorX <= 0) {
+                            Graficos.labelError.setText("ERROR:");
+                            Graficos.textoError.setText("x debe ser mayor a 0");
+                        } else {
+                            Graficos.PlotLogNormalX(valorMu, valorSigma, valorX, direccion);
+                        }
+                    } else if (!probString.isEmpty()) {
+                        double valorProb = Double.parseDouble(probString);
+                        if (valorProb <= 0 || valorProb >= 1) {
+                            Graficos.labelError.setText("ERROR:");
+                            Graficos.textoError.setText("La probabilidad debe estar entre 0 y 1");
+                        } else {
+                            Graficos.PlotLogNormalP(valorMu, valorSigma, valorProb, direccion);
+                        }
+                    } else {
+                        Graficos.PlotLogNormal(valorMu, valorSigma);
+                    }
+                }
+
+            } catch (Exception valInc) {//Evaluar casilleros no numéricos
+                Graficos.labelError.setText("ERROR:");
+                Graficos.textoError.setText("Los valores deben ser numéricos");
+            }
+        }
+    }
+
+    static void ControlPareto(String direccion) {
+        String mString = Parametros.inputM.getText();
+        String alfaString = Parametros.inputAlfa.getText();
+        String xString = Graficos.inputX.getText();
+        String probString = Graficos.inputProb.getText();
+        
+        if (alfaString.isEmpty() || mString.isEmpty()) { //Evaluar casilleros vacios
+            Graficos.labelError.setText("ERROR:");
+            Graficos.textoError.setText("Complete todos los parámetros");
+        } else {
+            try {//Convertir a numérico
+                double valorAlfa = Double.parseDouble(alfaString);
+                double valorM = Double.parseDouble(mString);
+                Graficos.labelError.setText("");
+                Graficos.textoError.setText("");
+
+                if (valorM <= 0 || valorAlfa <= 0) {
+                    Graficos.labelError.setText("ERROR:");
+                    Graficos.textoError.setText("α y m deben ser mayores a 0");
+                } else {
+                    if (!xString.isEmpty()) {
+                        double valorX = Double.parseDouble(xString);
+                        if (valorX < valorM) {
+                            Graficos.labelError.setText("ERROR:");
+                            Graficos.textoError.setText("x debe ser mayor o igual a m");
+                        } else {
+                            Graficos.PlotParetoX(valorAlfa, valorM, valorX, direccion);
+                        }
+
+                    } else if (!probString.isEmpty()) {
+                        double valorProb = Double.parseDouble(probString);
+                        if (valorProb <= 0 || valorProb >= 1) {
+                            Graficos.labelError.setText("ERROR:");
+                            Graficos.textoError.setText("La probabilidad debe estar entre 0 y 1");
+                        } else {
+                            Graficos.PlotParetoP(valorAlfa, valorM, valorProb, direccion);
+                        }
+                    } else {
+                        Graficos.PlotPareto(valorAlfa, valorM);
+                    }
+                }
+
+            } catch (Exception valInc) {//Evaluar casilleros no numéricos
+                Graficos.labelError.setText("ERROR:");
+                Graficos.textoError.setText("Los valores deben ser numéricos");
+            }
+        }
+    }
+    
     static void ControlStu(String direccion) {
         String VString = Parametros.inputV.getText();
         String xString = Graficos.inputX.getText();
@@ -275,55 +421,6 @@ public class Controles {
                         }
                     } else {
                         Graficos.PlotStu(valorV);
-                    }
-                }
-
-            } catch (Exception valInc) {//Evaluar casilleros no numéricos
-                Graficos.labelError.setText("ERROR:");
-                Graficos.textoError.setText("Los valores deben ser numéricos");
-            }
-        }
-    }
-
-    static void ControlGama(String direccion) {
-        String alfaString = Parametros.inputAlfa.getText();
-        String betaString = Parametros.inputBeta.getText();
-        String xString = Graficos.inputX.getText();
-        String probString = Graficos.inputProb.getText();
-
-        if (alfaString.isEmpty() || betaString.isEmpty()) { //Evaluar casilleros vacios
-            Graficos.labelError.setText("ERROR:");
-            Graficos.textoError.setText("Complete todos los parámetros");
-        } else {
-            double valorAlfa = Double.parseDouble(alfaString);
-            double valorBeta = Double.parseDouble(betaString);
-            try {//Convertir a numérico
-                Graficos.labelError.setText("");
-                Graficos.textoError.setText("");
-
-                if (valorBeta <= 0 || valorAlfa <= 0) {
-                    Graficos.labelError.setText("ERROR:");
-                    Graficos.textoError.setText("α y β deben ser mayores a 0");
-                } else {
-                    if (!xString.isEmpty()) {
-                        double valorX = Double.parseDouble(xString);
-                        if (valorX <= 0) {
-                            Graficos.labelError.setText("ERROR:");
-                            Graficos.textoError.setText("x debe ser mayor a 0");
-                        } else {
-                            Graficos.PlotGamaX(valorAlfa, valorBeta, valorX, direccion);
-                        }
-
-                    } else if (!probString.isEmpty()) {
-                        double valorProb = Double.parseDouble(probString);
-                        if (valorProb <= 0 || valorProb >= 1) {
-                            Graficos.labelError.setText("ERROR:");
-                            Graficos.textoError.setText("La probabilidad debe estar entre 0 y 1");
-                        } else {
-                            Graficos.PlotGamaP(valorAlfa, valorBeta, valorProb, direccion);
-                        }
-                    } else {
-                        Graficos.PlotGama(valorAlfa, valorBeta);
                     }
                 }
 
@@ -382,6 +479,55 @@ public class Controles {
             }
         }
 
+    }
+
+    static void ControlWeibull(String direccion) {
+        String etaString = Parametros.inputEta.getText();
+        String betaString = Parametros.inputBeta.getText();
+        String xString = Graficos.inputX.getText();
+        String probString = Graficos.inputProb.getText();
+
+        if (etaString.isEmpty() || betaString.isEmpty()) { //Evaluar casilleros vacios
+            Graficos.labelError.setText("ERROR:");
+            Graficos.textoError.setText("Complete todos los parámetros");
+        } else {
+            try {//Convertir a numérico
+                double valorEta = Double.parseDouble(etaString);
+                double valorBeta = Double.parseDouble(betaString);
+                Graficos.labelError.setText("");
+                Graficos.textoError.setText("");
+
+                if (valorBeta <= 0 || valorEta <= 0) {
+                    Graficos.labelError.setText("ERROR:");
+                    Graficos.textoError.setText("α y η deben ser mayores a 0");
+                } else {
+                    if (!xString.isEmpty()) {
+                        double valorX = Double.parseDouble(xString);
+                        if (valorX <= 0) {
+                            Graficos.labelError.setText("ERROR:");
+                            Graficos.textoError.setText("x debe ser mayor a 0");
+                        } else {
+                            Graficos.PlotWeibullX(valorEta, valorBeta, valorX, direccion);
+                        }
+
+                    } else if (!probString.isEmpty()) {
+                        double valorProb = Double.parseDouble(probString);
+                        if (valorProb <= 0 || valorProb >= 1) {
+                            Graficos.labelError.setText("ERROR:");
+                            Graficos.textoError.setText("La probabilidad debe estar entre 0 y 1");
+                        } else {
+                            Graficos.PlotWeibullP(valorEta, valorBeta, valorProb, direccion);
+                        }
+                    } else {
+                        Graficos.PlotWeibull(valorEta, valorBeta);
+                    }
+                }
+
+            } catch (Exception valInc) {//Evaluar casilleros no numéricos
+                Graficos.labelError.setText("ERROR:");
+                Graficos.textoError.setText("Los valores deben ser numéricos");
+            }
+        }
     }
 
     //Discretas
@@ -495,7 +641,7 @@ public class Controles {
         }
     }
 
-    static void ControlBinNeg(String direccion)  {
+    static void ControlBinNeg(String direccion) {
         String rString = Parametros.inputr.getText();
         String pString = Parametros.inputp.getText();
         String xString = Graficos.inputX.getText();
@@ -522,7 +668,7 @@ public class Controles {
                     if (!xString.isEmpty()) {
                         try {
                             int valorX = Integer.parseInt(xString);
-                            if (valorX < valorr ) {
+                            if (valorX < valorr) {
                                 Graficos.labelError.setText("ERROR:");
                                 Graficos.textoError.setText("x debe ser mayor o igual a r");
                             } else {
@@ -552,8 +698,8 @@ public class Controles {
             }
         }
     }
-    
-    static void ControlGeom(String direccion)  {
+
+    static void ControlGeom(String direccion) {
         String pString = Parametros.inputp.getText();
         String xString = Graficos.inputX.getText();
         String probString = Graficos.inputProb.getText();
@@ -574,7 +720,7 @@ public class Controles {
                     if (!xString.isEmpty()) {
                         try {
                             int valorX = Integer.parseInt(xString);
-                            if (valorX < 1 ) {
+                            if (valorX < 1) {
                                 Graficos.labelError.setText("ERROR:");
                                 Graficos.textoError.setText("x debe ser mayor o igual a 1");
                             } else {
@@ -604,7 +750,7 @@ public class Controles {
             }
         }
     }
-    
+
     static void ControlHiper(String direccion) {
         String nString = Parametros.inputn.getText();
         String NString = Parametros.inputN.getText();

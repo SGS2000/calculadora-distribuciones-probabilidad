@@ -61,9 +61,11 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
         northLabel.setFont(northLabelFont);
 
         // JComboBox con opciones
-        String[] optionsDist = {"Normal", "Beta", "Chi-cuadrado", "Exponencial", "F", "Gama", "t de Student",
-            "Uniforme continua", "Bernoulli", "Binomial", "Binomial negativa", "Geométrica", "Hipergeométrica",
-            "Uniforme discreta", "Poisson"};
+        String[] optionsDist = {"Normal", "Beta", "Chi-cuadrado", "Exponencial", 
+            "F", "Gama", "Log-normal", "Pareto I", "t de Student", 
+            "Uniforme continua", "Weibull", 
+            "Bernoulli", "Binomial", "Binomial negativa", "Geométrica", 
+            "Hipergeométrica", "Uniforme discreta", "Poisson"};
         comboBoxDist = new JComboBox<>(optionsDist);
         northPanel.add(comboBoxDist, BorderLayout.EAST);
 
@@ -183,12 +185,12 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
     KeyListener keyListener = new KeyListener() {
         @Override
         public void keyTyped(KeyEvent e) {
-            // Not used in this example
+            //Nada
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            // Not used in this example
+            //Nada
         }
 
         @Override
@@ -201,7 +203,7 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
         }
     };
     //Botones inferior izquierda
-
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == calcularButton) {
             Graficos.labelProb1.setText("");
@@ -234,12 +236,24 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
                     Controles.ControlGama(direccion);
                     break;
                 }
+                case "Log-normal": {
+                    Controles.ControlLogNormal(direccion);
+                    break;
+                }
+                case "Pareto I": {
+                    Controles.ControlPareto(direccion);
+                    break;
+                }
                 case "t de Student": {
                     Controles.ControlStu(direccion);
                     break;
                 }
                 case "Uniforme continua": {
                     Controles.ControlUnifC(direccion);
+                    break;
+                }
+                case "Weibull": {
+                    Controles.ControlWeibull(direccion);
                     break;
                 }
                 case "Bernoulli": {
@@ -289,6 +303,8 @@ public class DistribucionesPrograma extends JFrame implements ActionListener {
             Parametros.inputN1.setText("");
             Parametros.inputAlfa.setText("");
             Parametros.inputBeta.setText("");
+            Parametros.inputEta.setText("");
+            Parametros.inputM.setText("");
             Graficos.inputX.setText("");
             Graficos.inputProb.setText("");
             Graficos.labelProb1.setText("");
